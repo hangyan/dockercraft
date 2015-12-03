@@ -19,7 +19,7 @@ func main() {
 
 	// init docker client object
 	var err error
-	dockerClient, err = dockerclient.NewDockerClient("unix:///var/run/docker.sock", nil)
+	dockerClient, err = dockerclient.NewDockerClient(os.Getenv("DOCKER_REMOTE_URL"), nil)
 	if err != nil {
 		logrus.Fatal(err.Error())
 	}
@@ -32,14 +32,14 @@ func main() {
 	}
 	dockerDaemonVersion := version.Version
 
-	// name of docker binary that is needed 
+	// name of docker binary that is needed
 	dockerBinaryName := "docker-" + dockerDaemonVersion
 	logrus.Println("looking for docker binary named:", dockerBinaryName)
 
 	filename := path.Join("/bin", dockerBinaryName)
-	
+
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
-		
+
 		logrus.Println("docker binary (version " + dockerDaemonVersion + ") not found.")
 		logrus.Println("downloading", dockerBinaryName, "...")
 
@@ -53,7 +53,7 @@ func main() {
 			logrus.Fatal(err.Error())
 		}
 		defer resp.Body.Close()
-		
+
 		_, err = io.Copy(out, resp.Body)
 		if err != nil {
 			logrus.Fatal(err.Error())

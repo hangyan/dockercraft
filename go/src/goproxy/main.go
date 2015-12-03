@@ -35,7 +35,7 @@ type CPUStats struct {
 	SystemUsage uint64
 }
 
-// previousCPUStats is a map containing the previous CPU stats we got from the 
+// previousCPUStats is a map containing the previous CPU stats we got from the
 // docker daemon through the docker remote API
 var previousCPUStats map[string]*CPUStats = make(map[string]*CPUStats)
 
@@ -61,7 +61,7 @@ func main() {
 
 	// init docker client object
 	var err error
-	dockerClient, err = dockerclient.NewDockerClient("unix:///var/run/docker.sock", nil)
+	dockerClient, err = dockerclient.NewDockerClient(os.Getenv("DOCKER_REMOTE_URL"), nil)
 	if err != nil {
 		logrus.Fatal(err.Error())
 	}
